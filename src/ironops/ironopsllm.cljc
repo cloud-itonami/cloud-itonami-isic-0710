@@ -3,7 +3,8 @@
   The LLM can propose coordination asks (logging, scheduling, flagging,
   shipment coordination) but CANNOT propose extraction, blasting, or
   safety-authority decisions -- those are forbidden by the governor."
-  (:require [clojure.string :as str]))
+  (:require [clojure.edn :as edn]
+            [clojure.string :as str]))
 
 (defn mock-advisor
   "Deterministic mock advisor for demo/testing. Returns a safe proposal."
@@ -18,11 +19,14 @@
      :confidence 0.8}))
 
 (defn parse-edn-proposal
-  "Parse EDN proposal from LLM response.
+  "Parse EDN proposal from LLM response, via `clojure.edn/read-string`
+  (not core `read-string`, which evaluates reader macros like `#=` and is
+  unsafe against untrusted LLM output, and is also JVM-only in behavior
+  unlike `clojure.edn`'s cross-platform reader).
   Defends against malformed LLM output by returning a low-confidence noop."
   [response-str]
   (try
-    (read-string response-str)
+    (edn/read-string response-str)
     (catch #?(:clj Exception :cljs :default) _e
       {:op :noop
        :confidence 0.0

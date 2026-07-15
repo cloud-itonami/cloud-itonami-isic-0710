@@ -3,27 +3,32 @@
             [ironops.governor :as governor]
             [ironops.store :as store]))
 
-(deftest forbidden-operation-violations
+;; Tests only the public `governor/check` entry point -- never a private
+;; helper directly (see registry.edn's ADR-2607141920 "REVERTED" note: an
+;; earlier version of this test called the private `governor/forbidden-
+;; operation-violations` fn by name, which is a compile error since it is
+;; not public. `check` exercises the same rule through its real call path.
+(deftest forbidden-operations-blocked
   (testing "Extraction operations are forbidden"
-    (let [request {:op :extraction/extract :subject "site-1"}
+    (let [st (store/mem-store)
+          request {:op :extraction/extract :subject "site-1"}
           proposal {}]
-      (let [violations (governor/forbidden-operation-violations request proposal)]
-        (is (seq violations))
-        (is (= :forbidden-operation (:rule (first violations)))))))
+      (let [verdict (governor/check request {} proposal st)]
+        (is (some #(= :forbidden-operation (:rule %)) (:violations verdict))))))
 
   (testing "Blasting operations are forbidden"
-    (let [request {:op :extraction/blast :subject "site-1"}
+    (let [st (store/mem-store)
+          request {:op :extraction/blast :subject "site-1"}
           proposal {}]
-      (let [violations (governor/forbidden-operation-violations request proposal)]
-        (is (seq violations))
-        (is (= :forbidden-operation (:rule (first violations)))))))
+      (let [verdict (governor/check request {} proposal st)]
+        (is (some #(= :forbidden-operation (:rule %)) (:violations verdict))))))
 
   (testing "Safety authority operations are forbidden"
-    (let [request {:op :authority/safety-clearance :subject "site-1"}
+    (let [st (store/mem-store)
+          request {:op :authority/safety-clearance :subject "site-1"}
           proposal {}]
-      (let [violations (governor/forbidden-operation-violations request proposal)]
-        (is (seq violations))
-        (is (= :forbidden-operation (:rule (first violations))))))))
+      (let [verdict (governor/check request {} proposal st)]
+        (is (some #(= :forbidden-operation (:rule %)) (:violations verdict)))))))
 
 (deftest coordination-operations-allowed
   (testing "Coordination operations don't trigger forbidden check"
