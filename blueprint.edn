@@ -8,4 +8,63 @@
  :itonami.blueprint/robotics true
  :itonami.blueprint/required-technologies [:robotics :identity :forms :dmn :bpmn :audit-ledger :telemetry]
  :itonami.blueprint/status :public-oss
- :itonami.blueprint/maturity :implemented}
+ :itonami.blueprint/maturity :implemented
+ :itonami.blueprint/implemented-slice
+ "IronOps-LLM Advisor <-> Iron Ore Governor, langgraph-clj StateGraph
+ (langgraph.graph, ironops.operation/build), append-only audit ledger
+ (ironops.store/ledger + append-ledger!, mem-store).
+ Fixes a severe prior gap, present in BOTH the code AND this file's own
+ sibling README: this repo previously had NO StateGraph at all --
+ ironops.operation was just a static op-registry (a data map + two
+ lookup functions, no graph, no wiring); the actual 'flow' lived as a
+ hand-called chain inside ironops.sim's run-proposal function (advisor
+ -> governor, nothing else -- a governor invoked directly from a demo
+ file, never through any graph). ironops.ironopsllm had NO defprotocol
+ Advisor at all -- just plain functions (mock-advisor/llm-advisor/
+ advisor). NO ledger concept existed anywhere in ironops.store. And the
+ README ACTIVELY made two false technical claims, not merely an
+ overclaimed blueprint: its Architecture section claimed 'The
+ governed-actor pattern (langgraph StateGraph + independent Governor
+ ...)' when no StateGraph existed anywhere in the code, and its Store
+ bullet claimed 'Protocol-based (MemStore for dev/test, DatomicStore
+ for production)' when no DatomicStore ever existed at all. The
+ README's own 'Tests' section additionally fabricated a count ('16
+ tests / 35 assertions') against an actual 7 deftests (6 governor + 1
+ store-contract). This blueprint nonetheless claimed
+ :itonami.blueprint/maturity :implemented and listed :audit-ledger in
+ :required-technologies, which was false given all of the above.
+ Now: a genuinely compiled StateGraph (intake -> advise -> govern ->
+ decide -+-> commit / request-approval -> commit / hold) with
+ interrupt-before #{:request-approval} + an in-memory checkpointer for
+ real human-in-the-loop resume; a real ironops.ironopsllm/Advisor
+ protocol with MockAdvisor/LlmAdvisor records wrapping the SAME
+ proposal-building logic that existed before (renamed mock-advisor/
+ llm-advisor -> mock-proposal/llm-proposal, byte-identical bodies, to
+ make room for the protocol's own mock-advisor/llm-advisor CONSTRUCTOR
+ fns); and a real ironops.store/ledger + append-ledger! genuinely wired
+ into the :commit/:hold graph nodes, not test-only. ironops.governor's
+ five checks (forbidden-operation · no-spec-basis ·
+ site-record-missing/not-verified · safety-concern-escalation ·
+ confidence-floor) and ironops.phase's intake/verify/propose/resolved/
+ hold transition table are reused UNCHANGED -- this fix only wires the
+ existing mine-safety/coordination compliance policy into a real
+ compiled graph and a real ledger, it does not redesign it. The
+ governor's own verdict :hard?/:escalate? flags drive routing directly:
+ :hard? true (checks 1-4, including safety-concern-escalation) is a
+ PERMANENT block straight to :hold, never interactive; the ONLY
+ interactive :request-approval path is check 5 (confidence floor)
+ firing alone.
+ Proven end-to-end by test/ironops/operation_test.clj (ledger stays
+ empty until a real commit/hold, all five governor checks exercised
+ through the REAL compiled graph including the safety-concern flag's
+ permanent non-interactive hold, escalate-then-approve and
+ escalate-then-reject for the sole low-confidence-only interactive
+ path) plus a clojure -M:dev:run demo runner producing real ledger
+ entries for every scenario -- 41 tests / 129 assertions in test/
+ (up from 7 deftests before this fix), plus the pre-existing 1 test /
+ 5 assertions in test-cross-repo/ (ADR-2607999970's cross-actor
+ pedigree export, unaffected by this fix). CI
+ (.github/workflows/ci.yml) was missing entirely and is added in this
+ fix. README.md's Architecture/Store/Tests sections and this file's
+ own text are corrected to match, since the StateGraph/Governor/ledger
+ claims are now genuinely true rather than being walked back."}

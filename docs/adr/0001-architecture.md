@@ -148,3 +148,46 @@ than ever auto-proposing extraction or authority acts).
   Regulation 2009 (AU)
 - Agência Nacional de Mineração (ANM) regulations (Brazil)
 - 鉱山保安法 (Mine Safety Act) (Japan)
+
+## Addendum (2026-07-23): the StateGraph/Store/test-count claims above
+## were false until this addendum's companion fix landed
+
+This ADR's own "Context" (line 15-16) and "Decision 8" sections, and
+the "Consequences" section's "16 tests / 35 assertions" line, described
+an architecture and a test count that **did not exist in the code** at
+the time this ADR was accepted. There was no `langgraph` StateGraph
+anywhere in `src/` -- `ironops.operation` was a static op-registry (a
+data map + two lookup functions, no graph); the actual proposal flow
+was a hand-called chain inside `ironops.sim`'s `run-proposal`
+(advisor -> governor directly, never through any graph).
+`ironops.ironopsllm` had no `Advisor` protocol -- Decision 9's "mock +
+LLM advisor pair" existed only as plain functions, not the protocol-
+based seam every other actor in this fleet uses. No append-only audit
+ledger existed anywhere in `ironops.store`. `test/` contained 7
+deftests (6 governor + 1 store-contract), not "16 tests / 35
+assertions". `README.md`'s own "Architecture" section additionally made
+an outright false claim of a "DatomicStore for production", which
+Decision 8 above only ever described as a hypothetical future addition
+("Full `DatomicStore` implementation can be added...") -- the README's
+phrasing was a stronger, false claim than even this ADR's own hedged
+language.
+
+This addendum does not rewrite the Decision/Alternatives/Consequences
+text above (a historical record of this actor's original architecture
+*intent*), but records that the intent described above was not
+actually implemented as claimed until the companion fix (see
+`blueprint.edn`'s `:itonami.blueprint/implemented-slice` and
+`README.md`'s "Maturity / honest history" section for the full,
+detailed correction). As of that fix: `ironops.operation/build` is a
+genuinely compiled `langgraph.graph` StateGraph matching the
+`intake -> advise -> govern -> decide -+-> commit / request-approval ->
+commit / hold` shape this ADR always intended; `ironops.ironopsllm/
+Advisor` is a real protocol; `ironops.store/ledger`/`append-ledger!` is
+a real append-only audit ledger; and `test/` now has 41 deftests / 129
+assertions (plus 1 test / 5 assertions in `test-cross-repo/`,
+ADR-2607999970's cross-actor pedigree export, unaffected). No
+`DatomicStore` exists -- that specific claim in the pre-fix README was
+simply removed, not implemented, since it was never part of this ADR's
+own actual decision (Decision 8 only ever described it as a possible
+future addition "following the pattern established by
+quarrying/4810").
