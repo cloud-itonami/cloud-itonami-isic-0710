@@ -4,12 +4,22 @@ name: CI
 # :local/root paths (../../kotoba-lang/{langgraph,robotics}), and the
 # :dev alias overrides the transitive langchain dependency the same
 # way. Those don't resolve on a bare single-repo checkout, so the test
-# job reconstructs the workspace layout by checking out all three
-# siblings (all PUBLIC) into the expected relative paths -- no token
-# needed. `io.github.kotoba-lang/pedigree` is a real pinned git
-# dependency (not :local/root), so it resolves on its own via normal
-# deps.edn git-coordinate resolution -- no sibling checkout needed for
-# it. Same pattern as cloud-itonami-isic-869 / cloud-itonami-isic-2219.
+# job reconstructs the workspace layout by checking out siblings (all
+# PUBLIC) into the expected relative paths -- no token needed.
+# kotoba-lang/robotics itself declares :local/root deps on
+# kotoba-lang/html and kotoba-lang/css (added for its operator
+# dashboard) resolved relative to ITS OWN checkout path
+# (orgs/kotoba-lang/robotics/../{html,css} ->
+# orgs/kotoba-lang/{html,css}), so those two are also checked out here
+# -- confirmed empirically: omitting them fails classpath resolution
+# with "Local lib io.github.kotoba-lang/html not found". Same base
+# pattern as cloud-itonami-isic-869 / cloud-itonami-isic-2219 (which
+# both share this transitive dependency but at the time of writing
+# have not yet had a CI run since kotoba-lang/robotics gained it -- a
+# known latent gap in their own CI, out of scope for this repo's fix).
+# `io.github.kotoba-lang/pedigree` is a real pinned git dependency (not
+# :local/root), so it resolves on its own via normal deps.edn
+# git-coordinate resolution -- no sibling checkout needed for it.
 
 on:
   push:
@@ -42,6 +52,14 @@ jobs:
         with:
           repository: kotoba-lang/robotics
           path: orgs/kotoba-lang/robotics
+      - uses: actions/checkout@v4
+        with:
+          repository: kotoba-lang/html
+          path: orgs/kotoba-lang/html
+      - uses: actions/checkout@v4
+        with:
+          repository: kotoba-lang/css
+          path: orgs/kotoba-lang/css
       - uses: actions/checkout@v4
         with:
           repository: kotoba-lang/langchain
