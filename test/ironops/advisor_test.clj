@@ -11,7 +11,8 @@
   `llm-advisor` fns (now `mock-proposal`/`llm-proposal`) always
   returned, and that `parse-edn-proposal`'s defensive EDN parsing is
   unaffected by the rename."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.edn :as edn]
+            [clojure.test :refer [deftest is testing]]
             [ironops.ironopsllm :as advisor]))
 
 (deftest mock-advisor-constructs-an-advisor-instance
@@ -72,7 +73,7 @@
       (is (string? (:error parsed))))))
 
 (deftest parse-edn-proposal-never-evaluates-reader-macros
-  (testing "parse-edn-proposal uses clojure.edn/read-string, not core read-string -- unsafe reader macros like #= never execute against untrusted LLM output"
+  (testing "parse-edn-proposal uses clojure.edn/read-string, not core edn/read-string -- unsafe reader macros like #= never execute against untrusted LLM output"
     (let [parsed (advisor/parse-edn-proposal "#=(+ 1 2)")]
       (is (= :noop (:op parsed))
           "a #= reader macro is rejected as malformed EDN, never evaluated"))))

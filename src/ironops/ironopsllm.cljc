@@ -40,7 +40,7 @@
 
 (defn parse-edn-proposal
   "Parse EDN proposal from LLM response, via `clojure.edn/read-string`
-  (not core `read-string`, which evaluates reader macros like `#=` and is
+  (not core `edn/read-string`, which evaluates reader macros like `#=` and is
   unsafe against untrusted LLM output, and is also JVM-only in behavior
   unlike `clojure.edn`'s cross-platform reader).
   Defends against malformed LLM output by returning a low-confidence noop."
