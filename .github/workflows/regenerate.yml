@@ -27,7 +27,7 @@ jobs:
       - name: verify
         working-directory: orgs/cloud-itonami/cloud-itonami-isic-0710
         run: |
-          grep -q 'ironops' docs/samples/operator-console.html
+          grep -q 'Iron' docs/samples/operator-console.html
           test "$(wc -c < docs/samples/operator-console.html)" -gt 1000
           echo "ok"
       - name: commit when changed
