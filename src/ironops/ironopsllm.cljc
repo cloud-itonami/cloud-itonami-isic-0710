@@ -19,7 +19,7 @@
   fleet's naming convention where `(advisor/mock-advisor)` returns an
   `Advisor` instance, not a resolved proposal)."
   (:require [clojure.edn :as edn]
-            [clojure.string :as str]))
+            [kotoba.lang.text :as str]))
 
 ;; ----------------------------- proposal builders (UNCHANGED domain logic, renamed for a protocol-based home) -----------------------------
 
