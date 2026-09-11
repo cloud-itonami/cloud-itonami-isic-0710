@@ -59,7 +59,7 @@
  through the REAL compiled graph including the safety-concern flag's
  permanent non-interactive hold, escalate-then-approve and
  escalate-then-reject for the sole low-confidence-only interactive
- path) plus a clojure -M:dev:run demo runner producing real ledger
+ path) plus a kbb -M:dev:run demo runner producing real ledger
  entries for every scenario -- 41 tests / 129 assertions in test/
  (up from 7 deftests before this fix), plus the pre-existing 1 test /
  5 assertions in test-cross-repo/ (ADR-2607999970's cross-actor

@@ -85,7 +85,7 @@ intake -> advise -> govern -> decide -+-> commit
 ### Demo (mock advisor, offline)
 
 ```bash
-clojure -M:dev:run
+kbb -M:dev:run
 ```
 
 Drives the REAL compiled StateGraph through seven scenarios: a clean
@@ -98,8 +98,8 @@ each.
 ### Tests
 
 ```bash
-clojure -M:dev:test          # 41 tests / 129 assertions (test/)
-clojure -M:dev:cross-repo-test  # 1 test / 5 assertions (test-cross-repo/)
+kbb -M:dev:test          # 41 tests / 129 assertions (test/)
+kbb -M:dev:cross-repo-test  # 1 test / 5 assertions (test-cross-repo/)
 ```
 
 Covers the Advisor protocol, governor rules (all five checks, exercised
@@ -112,7 +112,7 @@ ledger discipline).
 ### Lint
 
 ```bash
-clojure -M:lint
+kbb -M:lint
 ```
 
 Static analysis (clj-kondo) on src/, test/, and test-cross-repo/.

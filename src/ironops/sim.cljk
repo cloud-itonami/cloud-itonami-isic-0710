@@ -1,5 +1,5 @@
 (ns ironops.sim
-  "Demo driver -- `clojure -M:dev:run`. Drives the REAL compiled
+  "Demo driver -- `kbb -M:dev:run`. Drives the REAL compiled
   `langgraph-clj` `StateGraph` (`ironops.operation/build`) end-to-end
   through a clean auto-commit, a HARD-blocked safety-concern flag, the
   other three HARD-block scenarios (forbidden operation, missing site,
@@ -115,7 +115,7 @@
 
   (println "\nDemo complete."))
 
-;; Entry point for `clojure -M:dev:run`
+;; Entry point for `kbb -M:dev:run`
 (defn -main [& _args]
   (demo))
 
