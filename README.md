@@ -78,7 +78,7 @@ intake -> advise -> govern -> decide -+-> commit
      nodes. Every committed / held / approval-rejected decision is a
      durable, immutable fact; the ledger stays empty until a run
      actually reaches a terminal node (proven by
-     `test/ironops/operation_test.clj`)
+     `test/ironops/operation_test.cljk`)
 
 ## Running
 
@@ -135,17 +135,17 @@ Static analysis (clj-kondo) on src/, test/, and test-cross-repo/.
 
 | File | Role |
 |---|---|
-| `src/ironops/store.cljc` | `Store` protocol + `MemStore`: sites, production records, assessments, and the append-only audit ledger (`ledger`/`append-ledger!`) |
-| `src/ironops/facts.cljc` | Per-jurisdiction (JP/US/AU/BR) mine-safety evidence catalog |
-| `src/ironops/ironopsllm.cljc` | IronOps-LLM Advisor — a real `Advisor` protocol + `MockAdvisor`/`LlmAdvisor`; the same proposal-building logic as before, now behind the protocol |
-| `src/ironops/registry.cljc` | Ore-grade/shipment-record calculation helpers |
-| `src/ironops/governor.cljc` | **Iron Ore Governor** — 5 checks (forbidden-operation · no-spec-basis · site-record-missing/not-verified · safety-concern-escalation · confidence-floor), reused unchanged |
-| `src/ironops/phase.cljc` | The intake/verify/propose/resolved/hold phase-transition tracker, reused unchanged to annotate audit facts |
-| `src/ironops/operation.cljc` | **The real compiled `langgraph-clj` StateGraph** (`operation/build`): `intake -> advise -> govern -> decide -+-> commit / request-approval -> commit / hold`, `interrupt-before #{:request-approval}` for genuine human-in-the-loop approval. Also carries the op registry (`operations`/`valid-operation?`/`operation-info`), preserved unchanged from before this fix |
-| `src/ironops/export.cljc` | Cross-actor supply-chain-linkage pedigree export (ADR-2607999970) — unrelated to the advise/govern/commit flow above, a separate direct write/read path over `store/add-production-record` |
-| `src/ironops/sim.cljc` | demo driver — drives the real compiled StateGraph end-to-end |
+| `src/ironops/store.cljk` | `Store` protocol + `MemStore`: sites, production records, assessments, and the append-only audit ledger (`ledger`/`append-ledger!`) |
+| `src/ironops/facts.cljk` | Per-jurisdiction (JP/US/AU/BR) mine-safety evidence catalog |
+| `src/ironops/ironopsllm.cljk` | IronOps-LLM Advisor — a real `Advisor` protocol + `MockAdvisor`/`LlmAdvisor`; the same proposal-building logic as before, now behind the protocol |
+| `src/ironops/registry.cljk` | Ore-grade/shipment-record calculation helpers |
+| `src/ironops/governor.cljk` | **Iron Ore Governor** — 5 checks (forbidden-operation · no-spec-basis · site-record-missing/not-verified · safety-concern-escalation · confidence-floor), reused unchanged |
+| `src/ironops/phase.cljk` | The intake/verify/propose/resolved/hold phase-transition tracker, reused unchanged to annotate audit facts |
+| `src/ironops/operation.cljk` | **The real compiled `langgraph-clj` StateGraph** (`operation/build`): `intake -> advise -> govern -> decide -+-> commit / request-approval -> commit / hold`, `interrupt-before #{:request-approval}` for genuine human-in-the-loop approval. Also carries the op registry (`operations`/`valid-operation?`/`operation-info`), preserved unchanged from before this fix |
+| `src/ironops/export.cljk` | Cross-actor supply-chain-linkage pedigree export (ADR-2607999970) — unrelated to the advise/govern/commit flow above, a separate direct write/read path over `store/add-production-record` |
+| `src/ironops/sim.cljk` | demo driver — drives the real compiled StateGraph end-to-end |
 | `test/ironops/*_test.clj` | advisor · governor · store contract/ledger · export · operation (real StateGraph, end-to-end) |
-| `test-cross-repo/ironops/pedigree_integration_test.clj` | real store round-trip proof for the pedigree export chain |
+| `test-cross-repo/ironops/pedigree_integration_test.cljk` | real store round-trip proof for the pedigree export chain |
 
 ## Architecture Decision Records
 
@@ -190,7 +190,7 @@ nodes. `ironops.governor`'s five checks and `ironops.phase`'s
 transition table are reused UNCHANGED — this fix only wires the
 existing mine-safety/coordination compliance policy into a real
 compiled graph and a real ledger, it does not redesign it. Proven
-end-to-end by `test/ironops/operation_test.clj` (ledger stays empty
+end-to-end by `test/ironops/operation_test.cljk` (ledger stays empty
 until a real commit/hold, all five governor checks exercised through
 the real graph including a permanent hold for the safety-concern flag
 that is NEVER offered an interactive approval, escalate-then-approve

@@ -54,7 +54,7 @@
  PERMANENT block straight to :hold, never interactive; the ONLY
  interactive :request-approval path is check 5 (confidence floor)
  firing alone.
- Proven end-to-end by test/ironops/operation_test.clj (ledger stays
+ Proven end-to-end by test/ironops/operation_test.cljk (ledger stays
  empty until a real commit/hold, all five governor checks exercised
  through the REAL compiled graph including the safety-concern flag's
  permanent non-interactive hold, escalate-then-approve and
