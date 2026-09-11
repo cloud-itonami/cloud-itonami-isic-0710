@@ -37,7 +37,7 @@ jobs:
       - uses: DeLaGuardo/setup-clojure@13.4
         with: { cli: latest }
       - name: clj-kondo (errors fail the build)
-        run: clojure -M:lint
+        run: kbb -M:lint
 
   test:
     runs-on: ubuntu-latest
@@ -70,10 +70,10 @@ jobs:
         with: { cli: latest }
       - name: test (advisor · governor · store contract/ledger · export · operation, real compiled StateGraph end-to-end)
         working-directory: orgs/cloud-itonami/cloud-itonami-isic-0710
-        run: clojure -M:dev:test
+        run: kbb -M:dev:test
       - name: cross-repo test (pedigree export round-trip)
         working-directory: orgs/cloud-itonami/cloud-itonami-isic-0710
-        run: clojure -M:dev:cross-repo-test
+        run: kbb -M:dev:cross-repo-test
       - name: demo runner (compiled StateGraph, end-to-end)
         working-directory: orgs/cloud-itonami/cloud-itonami-isic-0710
-        run: clojure -M:dev:run
+        run: kbb -M:dev:run
