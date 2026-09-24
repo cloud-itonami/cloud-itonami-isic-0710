@@ -5,7 +5,7 @@
   establish for their own `pedigree-for-heat`/`pedigree-for-part-lot`,
   applied to this actor's operational-record-derived (not physics-
   simulation-derived) evidentiary basis."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kotoba.pedigree :as pedigree]
             [ironops.export :as export]
             [ironops.store :as store]))

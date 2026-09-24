@@ -12,7 +12,7 @@
   ns docstring) is what genuinely drives routing, and that
   `ironops.governor/check`'s five checks are exercised UNCHANGED through
   the real graph, not re-derived."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [langgraph.graph :as g]
             [ironops.operation :as operation]
             [ironops.ironopsllm :as advisor]

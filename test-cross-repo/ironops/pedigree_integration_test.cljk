@@ -30,7 +30,7 @@
   Run with `kbb -M:dev:cross-repo-test`. Still no live network
   call at runtime: this is a build-time classpath dependency exercised
   by tests, same category as every other alias in this fleet."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kotoba.pedigree :as pedigree]
             [ironops.export :as export]
             [ironops.store :as store]))
