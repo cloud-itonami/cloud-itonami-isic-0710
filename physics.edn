@@ -1,0 +1,22 @@
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-0710"
+ :cases
+ [{:id :ore-haul-ramp
+   :kind :transport
+   :procedure "autonomous haul truck carries blasted iron ore up the pit ramp to the crusher"
+   :params {:mass-kg 140000.0 :distance-m 1500.0 :v-max-mps 4.0 :a-max-mps2 0.5 :brake-decel-mps2 1.5
+            :drive-force-n 700000.0 :crr 0.02 :slope-deg 8.0
+            :cog-height-m 2.5 :support-half-length-m 3.0 :max-time-s 3000.0}
+   :sweep {:param :payload-kg :values [100000.0 150000.0 200000.0 230000.0 260000.0]}
+   :quantity :cycle-time-s
+   :limit {:max 600.0 :basis "estimate: one loaded ramp leg inside the ~10 min haul slot of the shovel-truck match"}
+   :boundary {:lo 50000.0 :hi 400000.0}}
+  {:id :rock-bolt-proof-pull
+   :kind :material
+   :procedure "ground-support robot pull-tests a 20 mm steel rock bolt to its proof load"
+   :params {:length-m 0.10 :area-m2 3.14e-4 :youngs-modulus-pa 200.0e9 :yield-stress-pa 500.0e6
+            :hardening-pa 1.0e9 :density-kg-m3 7850.0}
+   :sweep {:param :max-force-n :values [100000.0 130000.0 150000.0 170000.0 190000.0]}
+   :quantity :final-strain
+   :limit {:max 0.004 :basis "estimate: a proof-load pull test must leave the bolt essentially elastic (strain well under 0.4 %)"}
+   :boundary {:lo 50000.0 :hi 250000.0}}]}
