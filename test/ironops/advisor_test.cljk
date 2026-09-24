@@ -12,7 +12,7 @@
   returned, and that `parse-edn-proposal`'s defensive EDN parsing is
   unaffected by the rename."
   (:require [clojure.edn :as edn]
-            [clojure.test :refer [deftest is testing]]
+            [kotoba.test :refer [deftest is testing]]
             [ironops.ironopsllm :as advisor]))
 
 (deftest mock-advisor-constructs-an-advisor-instance

@@ -1,5 +1,5 @@
 (ns ironops.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [ironops.governor :as governor]
             [ironops.store :as store]))
 

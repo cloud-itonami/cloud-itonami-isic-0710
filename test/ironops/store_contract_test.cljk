@@ -1,5 +1,5 @@
 (ns ironops.store-contract-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [ironops.store :as store]))
 
 (deftest mem-store-implements-contract
