@@ -11,7 +11,7 @@
   `llm-advisor` fns (now `mock-proposal`/`llm-proposal`) always
   returned, and that `parse-edn-proposal`'s defensive EDN parsing is
   unaffected by the rename."
-  (:require [clojure.edn :as edn]
+  (:require [kotoba.lang.edn :as edn]
             [kotoba.test :refer [deftest is testing]]
             [ironops.ironopsllm :as advisor]))
 
